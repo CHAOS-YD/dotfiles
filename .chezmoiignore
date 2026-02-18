@@ -1,0 +1,8 @@
+{{- if ne .chezmoi.os "windows" -}}
+vimfiles
+AppData
+{{- else -}}
+dot_config/vim
+dot_config/nvim
+dot_vim
+{{- end -}}

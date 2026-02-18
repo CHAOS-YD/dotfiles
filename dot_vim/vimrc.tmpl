@@ -1,0 +1,7 @@
+" ========== 传统路径 Vim 配置 ==========
+{{ template "vim_common" . }}
+if v:version < 800
+  " 针对老版本的简单配置
+else
+  set clipboard=unnamedplus
+endif

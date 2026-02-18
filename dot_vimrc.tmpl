@@ -1,0 +1,27 @@
+" ========== 智能入口 ~/.vimrc ==========
+let s:vim_version = v:version
+if s:vim_version >= 901
+  if exists('$XDG_CONFIG_HOME') && !empty($XDG_CONFIG_HOME)
+    let s:xdg_config = $XDG_CONFIG_HOME . '/vim/vimrc'
+  else
+    let s:xdg_config = expand('~/.config/vim/vimrc')
+  endif
+  if filereadable(s:xdg_config)
+    execute 'source' s:xdg_config
+    finish
+  endif
+endif
+
+if has('win32')
+  let s:legacy_config = expand('~/vimfiles/vimrc')
+else
+  let s:legacy_config = expand('~/.vim/vimrc')
+endif
+if filereadable(s:legacy_config)
+  execute 'source' s:legacy_config
+  finish
+endif
+
+echo "No Vim config found, using minimal defaults."
+set nocompatible
+syntax on

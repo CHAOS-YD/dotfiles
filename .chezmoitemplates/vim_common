@@ -1,0 +1,25 @@
+" ==================== 通用 Vim 配置 ====================
+set nocompatible
+filetype plugin indent on
+syntax on
+set hlsearch incsearch ignorecase smartcase
+set tabstop=4 shiftwidth=4 expandtab autoindent
+set number relativenumber showcmd wildmenu ruler
+set cursorline
+{{- if eq .chezmoi.os "windows" }}
+  set backupdir=$TEMP
+  set directory=$TEMP
+  set undodir=$TEMP
+{{- else }}
+  set backupdir=~/.vim/backup,.
+  set directory=~/.vim/swap,.
+  set undodir=~/.vim/undo,.
+{{- end }}
+if !isdirectory(expand(&backupdir)) | call mkdir(expand(&backupdir), "p") | endif
+if !isdirectory(expand(&directory)) | call mkdir(expand(&directory), "p") | endif
+if !isdirectory(expand(&undodir)) | call mkdir(expand(&undodir), "p") | endif
+let mapleader = " "
+nnoremap <Leader>w :w<CR>
+nnoremap <Leader>q :q<CR>
+nnoremap <Leader>x :x<CR>
+nnoremap <Leader>e :Explore<CR>

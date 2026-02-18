@@ -1,0 +1,14 @@
+" ========== Windows Vim 配置 ==========
+{{ template "vim_common" . }}
+set shell=pwsh
+set clipboard=unnamed
+let data_dir = '~/vimfiles'
+if empty(glob(data_dir . '/autoload/plug.vim'))
+  silent execute '!curl -fLo ' . data_dir . '/autoload/plug.vim --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+call plug#begin('~/vimfiles/plugged')
+Plug 'tpope/vim-sensible'
+Plug 'preservim/nerdtree'
+call plug#end()
+nnoremap <Leader>n :NERDTreeToggle<CR>
