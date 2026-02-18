@@ -2,7 +2,7 @@
 vimfiles
 AppData
 {{- else -}}
-dot_config/vim
-dot_config/nvim
-dot_vim
+.config/vim
+.config/nvim
+.vim
 {{- end -}}
