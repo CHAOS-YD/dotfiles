@@ -1,0 +1,110 @@
+" ==================== Universal Vim/Neovim Core ====================
+" This template is included by all Vim/Neovim config files.
+" Contains basic settings, editor-specific features, and cross-platform directories.
+
+" -------------------- Basic Settings (compatible with both) --------------------
+set nocompatible
+filetype plugin indent on
+syntax on
+set hlsearch incsearch
+set ignorecase smartcase
+set tabstop=4 shiftwidth=4
+set expandtab autoindent
+set number relativenumber
+set showcmd wildmenu
+set ruler cursorline
+
+" Leader key set to space (common shortcut prefix)
+let mapleader = " "
+
+" -------------------- Editor-Specific Features --------------------
+if has('nvim')
+  set inccommand=nosplit        " Neovim: live preview of substitute command
+else
+  set ttymouse=sgr              " Vim: terminal mouse support (prevents escape sequence issues)
+endif
+
+" -------------------- Platform-specific shell & clipboard --------------------
+" Set shell and clipboard based on OS (chezmoi variable available during rendering)
+{{- if eq .chezmoi.os "windows" }}
+  " Windows: configure PowerShell for external commands
+  if executable('pwsh')
+    set shell=pwsh
+  else
+    set shell=powershell
+  endif
+  set shellcmdflag=-NoLogo\ -NoProfile\ -ExecutionPolicy\ RemoteSigned\ -Command
+  set shellredir=\|\ Out-File\ -Encoding\ UTF8\ %s
+  set shellpipe=\|\ Out-File\ -Encoding\ UTF8\ %s
+  set shellquote= shellxquote=
+  set clipboard=unnamed          " Use Windows clipboard directly
+{{- else }}
+  " Unix-like: use bash and system clipboard
+  set shell=/bin/bash
+  set clipboard=unnamedplus
+{{- end }}
+
+" -------------------- Helper Functions --------------------
+" Ensure the directory for the given path exists
+function! EnsureDirExists(path) abort
+  if !isdirectory(expand(a:path))
+    call mkdir(expand(a:path), 'p')
+  endif
+endfunction
+
+" -------------------- Cross-Platform Directory Settings --------------------
+set undofile                     " Enable persistent undo (save edit history across sessions)
+
+if has('nvim')
+  " ----- Neovim: use XDG standard paths (stdpath returns absolute paths) -----
+  let s:cache = stdpath('cache')
+  let s:data  = stdpath('data')
+  let s:state = stdpath('state')
+
+  let &directory = s:cache . '/swap//'
+  let &backupdir = s:data . '/backup//,.'
+  set writebackup
+  let &undodir = s:state . '/undo//'
+
+  call EnsureDirExists(s:cache . '/swap//')
+  call EnsureDirExists(s:data . '/backup//')
+  call EnsureDirExists(s:state . '/undo//')
+
+else
+  " ----- Vim: platform-specific paths -----
+  if has('win32')
+    " Windows: expand prefix, then add /backup// to preserve // literal
+    let s:swap_dir   = expand('$TEMP') . '/vim-swap//'
+    let s:backup_dir = expand('~/vimfiles') . '/backup//'
+    let s:undo_dir   = expand('~/vimfiles') . '/undo//'
+
+    let &directory   = s:swap_dir
+    let &backupdir   = s:backup_dir . ',.'
+    let &undodir     = s:undo_dir
+    set writebackup
+
+    call EnsureDirExists(s:swap_dir)
+    call EnsureDirExists(s:backup_dir)
+    call EnsureDirExists(s:undo_dir)
+  else
+    " Unix-like: follow XDG spec, use expand() for fallback defaults
+    let s:cache = exists('$XDG_CACHE_HOME') ? $XDG_CACHE_HOME : expand('~/.cache')
+    let s:data  = exists('$XDG_DATA_HOME')  ? $XDG_DATA_HOME  : expand('~/.local/share')
+    let s:state = exists('$XDG_STATE_HOME') ? $XDG_STATE_HOME : expand('~/.local/state')
+
+    let s:vim_cache = s:cache . '/vim'
+    let s:vim_data  = s:data  . '/vim'
+    let s:vim_state = s:state . '/vim'
+
+    let &directory   = s:vim_cache . '/swap//'
+    let &backupdir   = s:vim_data . '/backup//,.'
+    let &undodir     = s:vim_state . '/undo//'
+    set writebackup
+
+    call EnsureDirExists(s:vim_cache . '/swap//')
+    call EnsureDirExists(s:vim_data . '/backup//')
+    call EnsureDirExists(s:vim_state . '/undo//')
+  endif
+endif
+
+" ==================== End of Universal Core ====================

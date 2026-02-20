@@ -1,14 +1,20 @@
-" ========== Windows Vim 配置 ==========
-{{ template "vim_common" . }}
-set shell=pwsh
-set clipboard=unnamed
-let data_dir = '~/vimfiles'
-if empty(glob(data_dir . '/autoload/plug.vim'))
-  silent execute '!curl -fLo ' . data_dir . '/autoload/plug.vim --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
-endif
-call plug#begin('~/vimfiles/plugged')
-Plug 'tpope/vim-sensible'
-Plug 'preservim/nerdtree'
+" ========== Windows Vim Configuration ==========
+" This file is managed by chezmoi. Rendered as ~/vimfiles/vimrc.
+" Includes common settings and plugin definitions.
+" vim-plug (plug.vim) is deployed directly by chezmoi – no auto‑install needed.
+
+" Include common core (basic settings, directories, shell, clipboard)
+{{ template "editors/common/core" . }}
+
+" Plugin directory (Windows)
+let s:plugged_dir = expand('~/vimfiles/plugged')
+
+" Plugin list (from shared template)
+call plug#begin(s:plugged_dir)
+{{ template "editors/vim/plugins" . }}
 call plug#end()
-nnoremap <Leader>n :NERDTreeToggle<CR>
+
+" Common key mappings
+{{ template "editors/common/mappings" . }}
+
+" Additional Windows-specific mappings can be added here if needed.

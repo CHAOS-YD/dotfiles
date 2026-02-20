@@ -1,9 +1,9 @@
 {{- if ne .chezmoi.os "windows" -}}
-# 非 Windows 系统（Linux/macOS）忽略 Windows 配置
+# On non-Windows systems (Linux/macOS), ignore Windows-specific configs
 vimfiles
 AppData
 {{- else -}}
-# Windows 系统忽略 Unix 配置
+# On Windows, ignore Unix-specific configs
 .config/vim
 .config/nvim
 .vimrc
