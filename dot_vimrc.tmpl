@@ -12,16 +12,6 @@ if s:vim_version >= 901
   endif
 endif
 
-if has('win32')
-  let s:legacy_config = expand('~/vimfiles/vimrc')
-else
-  let s:legacy_config = expand('~/.vim/vimrc')
-endif
-if filereadable(s:legacy_config)
-  execute 'source' s:legacy_config
-  finish
-endif
-
 echo "No Vim config found, using minimal defaults."
 set nocompatible
 syntax on

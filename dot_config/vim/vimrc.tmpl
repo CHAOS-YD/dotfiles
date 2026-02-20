@@ -1,21 +1,31 @@
 " ========== XDG 规范的 Vim 主配置 ==========
 {{ template "vim_common" . }}
-if !has('nvim')
-  set ttymouse=sgr
-endif
+
+" 根据操作系统设置 shell、剪贴板和插件目录
 {{- if eq .chezmoi.os "windows" }}
   set shell=pwsh
   set clipboard=unnamed
+  let s:plug_dir = expand('~/vimfiles/autoload/plug.vim')
+  let s:plugged_dir = '~/vimfiles/plugged'
 {{- else }}
+  set shell=/bin/bash          " 可按需修改为 /bin/zsh 等
   set clipboard=unnamedplus
+  let s:plug_dir = expand('~/.vim/autoload/plug.vim')
+  let s:plugged_dir = '~/.vim/plugged'
 {{- end }}
-let data_dir = has('nvim') ? stdpath('data') . '/site' : '~/.vim'
-if empty(glob(data_dir . '/autoload/plug.vim'))
-  silent execute '!curl -fLo ' . data_dir . '/autoload/plug.vim --create-dirs  https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+
+" 安装 vim-plug（如果不存在）
+if empty(glob(s:plug_dir))
+  silent execute '!curl -fLo ' . s:plug_dir . ' --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
-call plug#begin()
+
+" 插件列表
+call plug#begin(s:plugged_dir)
 Plug 'tpope/vim-sensible'
 Plug 'preservim/nerdtree'
+" 在此添加更多插件...
 call plug#end()
+
+" 快捷键
 nnoremap <Leader>n :NERDTreeToggle<CR>
