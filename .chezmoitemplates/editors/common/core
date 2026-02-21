@@ -6,6 +6,7 @@
 set nocompatible
 filetype plugin indent on
 syntax on
+set termguicolors
 set hlsearch incsearch
 set ignorecase smartcase
 set tabstop=4 shiftwidth=4
@@ -27,15 +28,11 @@ endif
 " -------------------- Platform-specific shell & clipboard --------------------
 " Set shell and clipboard based on OS (chezmoi variable available during rendering)
 {{- if eq .chezmoi.os "windows" }}
-  " Windows: configure PowerShell for external commands
-  if executable('pwsh')
-    set shell=pwsh
-  else
-    set shell=powershell
-  endif
-  set shellcmdflag=-NoLogo\ -NoProfile\ -ExecutionPolicy\ RemoteSigned\ -Command
-  set shellredir=\|\ Out-File\ -Encoding\ UTF8\ %s
-  set shellpipe=\|\ Out-File\ -Encoding\ UTF8\ %s
+  " Windows: use cmd.exe for maximum compatibility with vim-plug
+  set shell=cmd.exe
+  set shellcmdflag=/c
+  set shellredir=>%s\ 2>&1
+  set shellpipe=>%s\ 2>&1
   set shellquote= shellxquote=
   set clipboard=unnamed          " Use Windows clipboard directly
 {{- else }}

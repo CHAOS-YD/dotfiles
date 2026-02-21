@@ -6,6 +6,9 @@
 " Include common core (basic settings, directories, shell, clipboard)
 {{ template "editors/common/core" . }}
 
+" Use SSH protocol for all plugins (improves speed, avoids popups)
+let g:plug_url_format = 'git@github.com:%s.git'
+
 " Plugin directory (Windows)
 let s:plugged_dir = expand('~/vimfiles/plugged')
 
@@ -16,5 +19,8 @@ call plug#end()
 
 " Common key mappings
 {{ template "editors/common/mappings" . }}
+
+" Vim-specific mappings (for plugins like NERDTree)
+{{ template "editors/vim/mappings" . }}
 
 " Additional Windows-specific mappings can be added here if needed.
