@@ -1,19 +1,15 @@
 " ========== XDG compliant Vim main config ==========
 " This file is managed by chezmoi. Rendered as ~/.config/vim/vimrc (Linux/macOS).
-" Includes common settings and plugin definitions.
-" vim-plug (plug.vim) is deployed directly by chezmoi – no auto‑install needed.
 
 " Include common core (basic settings, directories, shell, clipboard)
 {{ template "editors/common/core" . }}
 
-" ---------- vim-plug global settings ----------
-" Use SSH protocol for all plugins (improves speed, avoids HTTPS authentication popups).
-" Requires that you have an SSH key configured and added to your GitHub account.
-" See: https://docs.github.com/en/authentication/connecting-to-github-with-ssh
-let g:plug_url_format = 'git@github.com:%s.git'
+" Include Vim core (auto-install vim-plug, Git mirror)
+{{ template "editors/vim/core" . }}
 
-" Plugin directory (XDG data directory)
-let s:plugged_dir = expand('~/.local/share/vim/plugged')
+" ---------- vim-plug settings ----------
+" Plugin directory – use s:vim_data_dir defined in common/core
+let s:plugged_dir = s:vim_data_dir . '/plugged'
 
 " Plugin list (from shared template)
 call plug#begin(s:plugged_dir)
@@ -23,7 +19,7 @@ call plug#end()
 " Common key mappings
 {{ template "editors/common/mappings" . }}
 
-" Vim-specific mappings (for plugins like NERDTree)
+" Vim-specific mappings
 {{ template "editors/vim/mappings" . }}
 
 " Additional Unix-specific mappings can be added here if needed.

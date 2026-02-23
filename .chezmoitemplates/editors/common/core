@@ -1,6 +1,7 @@
 " ==================== Universal Vim/Neovim Core ====================
 " This template is included by all Vim/Neovim config files.
 " Contains basic settings, editor-specific features, and cross-platform directories.
+" This file is designed to be independent of configuration management systems.
 
 " -------------------- Basic Settings (compatible with both) --------------------
 set nocompatible
@@ -26,8 +27,8 @@ else
 endif
 
 " -------------------- Platform-specific shell & clipboard --------------------
-" Set shell and clipboard based on OS (chezmoi variable available during rendering)
-{{- if eq .chezmoi.os "windows" }}
+" Use Vim's has() function for runtime detection
+if has('win32')
   " Windows: use cmd.exe for maximum compatibility with vim-plug
   set shell=cmd.exe
   set shellcmdflag=/c
@@ -35,11 +36,11 @@ endif
   set shellpipe=>%s\ 2>&1
   set shellquote= shellxquote=
   set clipboard=unnamed          " Use Windows clipboard directly
-{{- else }}
+else
   " Unix-like: use bash and system clipboard
   set shell=/bin/bash
   set clipboard=unnamedplus
-{{- end }}
+endif
 
 " -------------------- Helper Functions --------------------
 " Ensure the directory for the given path exists
@@ -67,6 +68,10 @@ if has('nvim')
   call EnsureDirExists(s:data . '/backup//')
   call EnsureDirExists(s:state . '/undo//')
 
+  " Expose directories for other templates
+  let s:vim_data_dir = s:data
+  let s:vim_cache_dir = s:cache
+  let s:vim_state_dir = s:state
 else
   " ----- Vim: platform-specific paths -----
   if has('win32')
@@ -83,6 +88,12 @@ else
     call EnsureDirExists(s:swap_dir)
     call EnsureDirExists(s:backup_dir)
     call EnsureDirExists(s:undo_dir)
+
+    " Vim data directory (plugins, autoload, etc.)
+    let s:vim_data_dir = expand('~/vimfiles')
+    " Windows usually doesn't have separate cache/state, reuse data dir with subfolders
+    let s:vim_cache_dir = expand('$TEMP') . '/vim'
+    let s:vim_state_dir = s:vim_data_dir . '/undo'
   else
     " Unix-like: follow XDG spec, use expand() for fallback defaults
     let s:cache = exists('$XDG_CACHE_HOME') ? $XDG_CACHE_HOME : expand('~/.cache')
@@ -101,7 +112,14 @@ else
     call EnsureDirExists(s:vim_cache . '/swap//')
     call EnsureDirExists(s:vim_data . '/backup//')
     call EnsureDirExists(s:vim_state . '/undo//')
+
+    let s:vim_data_dir = s:vim_data
+    let s:vim_cache_dir = s:vim_cache
+    let s:vim_state_dir = s:vim_state
   endif
 endif
+
+" Platform flag for convenience
+let s:is_windows = has('win32')
 
 " ==================== End of Universal Core ====================
