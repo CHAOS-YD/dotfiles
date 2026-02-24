@@ -1,6 +1,6 @@
 " ==================== Universal Vim/Neovim Core ====================
 " This template is included by all Vim/Neovim config files.
-" Contains basic settings, editor-specific features, and cross-platform directories.
+" It contains basic settings, editor-specific features, and cross‑platform directories.
 " This file is designed to be independent of configuration management systems.
 
 " -------------------- Basic Settings (compatible with both) --------------------
@@ -16,46 +16,46 @@ set number relativenumber
 set showcmd wildmenu
 set ruler cursorline
 
-" Leader key set to space (common shortcut prefix)
+" Leader key set to space (common shortcut prefix).
 let mapleader = " "
 
 " -------------------- Editor-Specific Features --------------------
 if has('nvim')
-  set inccommand=nosplit        " Neovim: live preview of substitute command
+  set inccommand=nosplit        " Neovim: live preview of substitute command.
 else
-  set ttymouse=sgr              " Vim: terminal mouse support (prevents escape sequence issues)
+  set ttymouse=sgr              " Vim: terminal mouse support (prevents escape sequence issues).
 endif
 
-" -------------------- Platform-specific shell & clipboard --------------------
-" Use Vim's has() function for runtime detection
+" -------------------- Platform-Specific Shell & Clipboard --------------------
+" Use Vim's has() function for runtime detection.
 if has('win32')
-  " Windows: use cmd.exe for maximum compatibility with vim-plug
+  " Windows: use cmd.exe for maximum compatibility with vim-plug.
   set shell=cmd.exe
   set shellcmdflag=/c
   set shellredir=>%s\ 2>&1
   set shellpipe=>%s\ 2>&1
   set shellquote= shellxquote=
-  set clipboard=unnamed          " Use Windows clipboard directly
+  set clipboard=unnamed          " Use Windows clipboard directly.
 else
-  " Unix-like: chezmoi detects if we are in WSL during template rendering
-  {{ if eq .chezmoi.os "linux" }}
-    {{ $kernel := output "uname" "-r" | trim }}
-    {{ if or (contains $kernel "WSL") (contains $kernel "microsoft") }}
+  " Unix-like: chezmoi detects if we are in WSL during template rendering.
+  {{- if eq .chezmoi.os "linux" }}
+    {{- $kernel := output "uname" "-r" | trim }}
+    {{- if or (contains $kernel "WSL") (contains $kernel "microsoft") }}
       {{ template "editors/env/wsl" . }}
-    {{ else }}
-      " Non-WSL Linux
+    {{- else }}
+      " Non-WSL Linux.
       set shell=/bin/bash
       set clipboard=unnamedplus
     {{ end }}
-  {{ else }}
-    " macOS or other Unix
+  {{- else }}
+    " macOS or other Unix.
     set shell=/bin/bash
     set clipboard=unnamedplus
   {{ end }}
 endif
 
 " -------------------- Helper Functions --------------------
-" Ensure the directory for the given path exists
+" Ensure the directory for the given path exists.
 function! EnsureDirExists(path) abort
   if !isdirectory(expand(a:path))
     call mkdir(expand(a:path), 'p')
@@ -63,7 +63,7 @@ function! EnsureDirExists(path) abort
 endfunction
 
 " -------------------- Cross-Platform Directory Settings --------------------
-set undofile                     " Enable persistent undo (save edit history across sessions)
+set undofile                     " Enable persistent undo (save edit history across sessions).
 
 if has('nvim')
   " ----- Neovim: use XDG standard paths (stdpath returns absolute paths) -----
@@ -80,14 +80,14 @@ if has('nvim')
   call EnsureDirExists(s:data . '/backup//')
   call EnsureDirExists(s:state . '/undo//')
 
-  " Expose directories for other templates
+  " Expose directories for other templates.
   let s:vim_data_dir = s:data
   let s:vim_cache_dir = s:cache
   let s:vim_state_dir = s:state
 else
   " ----- Vim: platform-specific paths -----
   if has('win32')
-    " Windows: expand prefix, then add /backup// to preserve // literal
+    " Windows: expand prefix, then add /backup// to preserve // literal.
     let s:swap_dir   = expand('$TEMP') . '/vim-swap//'
     let s:backup_dir = expand('~/vimfiles') . '/backup//'
     let s:undo_dir   = expand('~/vimfiles') . '/undo//'
@@ -101,13 +101,13 @@ else
     call EnsureDirExists(s:backup_dir)
     call EnsureDirExists(s:undo_dir)
 
-    " Vim data directory (plugins, autoload, etc.)
+    " Vim data directory (plugins, autoload, etc.).
     let s:vim_data_dir = expand('~/vimfiles')
-    " Windows usually doesn't have separate cache/state, reuse data dir with subfolders
+    " Windows usually doesn't have separate cache/state, reuse data dir with subfolders.
     let s:vim_cache_dir = expand('$TEMP') . '/vim'
     let s:vim_state_dir = s:vim_data_dir . '/undo'
   else
-    " Unix-like: follow XDG spec, use expand() for fallback defaults
+    " Unix-like: follow XDG spec, use expand() for fallback defaults.
     let s:cache = exists('$XDG_CACHE_HOME') ? $XDG_CACHE_HOME : expand('~/.cache')
     let s:data  = exists('$XDG_DATA_HOME')  ? $XDG_DATA_HOME  : expand('~/.local/share')
     let s:state = exists('$XDG_STATE_HOME') ? $XDG_STATE_HOME : expand('~/.local/state')
@@ -131,7 +131,7 @@ else
   endif
 endif
 
-" Platform flag for convenience
+" Platform flag for convenience.
 let s:is_windows = has('win32')
 
 " ==================== End of Universal Core ====================

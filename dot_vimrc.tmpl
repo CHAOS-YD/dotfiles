@@ -1,29 +1,67 @@
 " ========== Smart entry point: ~/.vimrc ==========
-" This file is the first configuration loaded by Vim on Unix-like systems.
-" It attempts to load the appropriate main configuration file:
-" 1. XDG path (~/.config/vim/vimrc) – preferred location (even for older Vim)
-" 2. Traditional path (~/.vim/vimrc) – fallback if XDG config missing
-" If both are missing, falls back to minimal defaults.
+" This file is the first configuration loaded by Vim.
+" It attempts to load the appropriate main configuration file based on OS.
+" Designed to work on both Unix-like and Windows systems.
 
-" Try XDG config (respect $XDG_CONFIG_HOME if set)
-if exists('$XDG_CONFIG_HOME') && !empty($XDG_CONFIG_HOME)
-  let s:xdg_config = $XDG_CONFIG_HOME . '/vim/vimrc'
+" ----- Platform deployment warning (this file is expected on non-Windows) -----
+if has('win32') || has('win64')
+    echohl WarningMsg
+    echo "Warning: This Vim entry point is intended for Unix-like systems only."
+    echo "It has been deployed on Windows. It will still attempt to load your Windows Vim config,"
+    echo "but please review your chezmoi deployment if this is unexpected."
+    echohl None
+endif
+
+if has('win32') || has('win64')
+  " ----- Windows-specific search paths -----
+  " 1. Traditional _vimrc in user's home (most common).
+  let s:win_config1 = expand('$HOME/_vimrc')
+  if filereadable(s:win_config1)
+    execute 'source' s:win_config1
+    finish
+  endif
+
+  " 2. Vimfiles directory (similar to Unix ~/.vim/vimrc).
+  let s:win_config2 = expand('$HOME/vimfiles/vimrc')
+  if filereadable(s:win_config2)
+    execute 'source' s:win_config2
+    finish
+  endif
+
+  " 3. System-wide Vim installation directory.
+  if exists('$VIM') && !empty($VIM)
+    let s:win_config3 = $VIM . '/_vimrc'
+    if filereadable(s:win_config3)
+      execute 'source' s:win_config3
+      finish
+    endif
+  endif
 else
-  let s:xdg_config = expand('~/.config/vim/vimrc')
-endif
-if filereadable(s:xdg_config)
-  execute 'source' s:xdg_config
-  finish
+  " ----- Unix-like search paths (Linux, macOS, WSL) -----
+  " 1. XDG config path (respect $XDG_CONFIG_HOME if set).
+  if exists('$XDG_CONFIG_HOME') && !empty($XDG_CONFIG_HOME)
+    let s:xdg_config = $XDG_CONFIG_HOME . '/vim/vimrc'
+  else
+    let s:xdg_config = expand('~/.config/vim/vimrc')
+  endif
+  if filereadable(s:xdg_config)
+    execute 'source' s:xdg_config
+    finish
+  endif
+
+  " 2. Traditional config path (fallback).
+  let s:legacy_config = expand('~/.vim/vimrc')
+  if filereadable(s:legacy_config)
+    execute 'source' s:legacy_config
+    finish
+  endif
 endif
 
-" Fallback to traditional config
-let s:legacy_config = expand('~/.vim/vimrc')
-if filereadable(s:legacy_config)
-  execute 'source' s:legacy_config
-  finish
+" If no config found, use minimal defaults.
+if has('win32') || has('win64')
+  echo "No Windows Vim config found, using minimal defaults."
+else
+  echo "No Unix-like Vim config found, using minimal defaults."
 endif
-
-" If no config found, use minimal defaults
-echo "No Vim config found, using minimal defaults."
 set nocompatible
 syntax on

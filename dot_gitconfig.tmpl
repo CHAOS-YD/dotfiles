@@ -1,18 +1,19 @@
-{{- /* Git configuration for Windows (deployed to ~/.gitconfig) */ -}}
+{{- /* Git configuration for Windows only */ -}}
+{{- if eq .chezmoi.os "windows" }}
 {{ template "git/common" . }}
 
 # ============================================================================
 # Windows-specific settings
 # ============================================================================
 [core]
-    # Windows line endings
     autocrlf = true
-
-    # Pager: Git Bash provides 'less'; if you use another shell, you may omit this line
+    filemode = false
     pager = less -F -X
+
 [user]
-    name = qdyangdi
+    name = ChaosYD
     email = 936768863@qq.com
+
 [diff]
     tool = nvim
 [difftool "nvim"]
@@ -22,13 +23,11 @@
     tool = nvim
 [mergetool "nvim"]
     cmd = 'nvim -d "$LOCAL" "$REMOTE" "$BASE" "$MERGED"'
-
-# If you prefer VS Code instead of Neovim, replace the above with:
-# [diff]
-#     tool = vscode
-# [difftool "vscode"]
-#     cmd = 'code --wait --diff "$LOCAL" "$REMOTE"'
-# [merge]
-#     tool = vscode
-# [mergetool "vscode"]
-#     cmd = 'code --wait --merge "$LOCAL" "$REMOTE" "$BASE" "$MERGED"'
+{{- else }}
+# ============================================================================
+# FATAL ERROR: This Git configuration file is intended for Windows only.
+# It has been deployed to a non-Windows system ({{ .chezmoi.os }}).
+# Please correct your chezmoi deployment and remove this file.
+# ============================================================================
+[error-intentionally-invalid
+{{- end }}

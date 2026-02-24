@@ -1,8 +1,24 @@
--- Load common Vimscript core and mappings (shared with Vim)
+-- ==================== Neovim Main Configuration ====================
+-- This file is the entry point for Neovim, managed by chezmoi.
+-- It loads common Vimscript settings and Neovim-specific Lua modules.
+-- All platform-specific logic is handled inside the included templates.
+
+-- ----- Platform warning: this configuration is primarily designed for Unix-like systems -----
+if vim.fn.has('win32') == 1 then
+    vim.notify(
+        "Warning: This Neovim configuration is intended for Unix-like systems (including WSL). "
+            .. "It may not work optimally on native Windows.",
+        vim.log.levels.WARN
+    )
+end
+
+-- Load common Vimscript core and mappings (shared with Vim).
 vim.cmd([[
 {{ template "editors/common/core" . }}
 {{ template "editors/common/mappings" . }}
 ]])
 
--- Load Neovim-specific core (includes lazy.nvim bootstrap and plugin config)
+-- Load Neovim-specific core (includes lazy.nvim bootstrap and plugin config).
 {{ template "editors/nvim/core" . }}
+
+-- Additional Neovim settings can be added here if needed.

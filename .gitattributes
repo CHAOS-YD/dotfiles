@@ -1,2 +1,33 @@
-# Automatically detect text files and ensure consistent line endings
+# Core rule: let Git automatically detect text files and normalize them.
 * text=auto
+
+# For specific file types, force LF line endings (the cross-platform golden standard).
+*.tmpl    text eol=lf
+*.lua     text eol=lf
+*.vim     text eol=lf
+*.vimrc   text eol=lf
+*.sh      text eol=lf
+*.bash    text eol=lf
+*.yaml    text eol=lf
+*.yml     text eol=lf
+*.json    text eol=lf
+# optional, if you have Markdown files
+*.md      text eol=lf
+
+# Force LF for all files in chezmoi-specific directories (including hidden ones).
+# These directories contain templates, data, and dotfiles that should always be LF.
+.chezmoitemplates/** text eol=lf
+.chezmoidata/**      text eol=lf
+# covers dot_config, dot_vimrc.tmpl, etc.
+dot_*/**             text eol=lf
+# if you use exact_ prefixed directories
+exact_*/**           text eol=lf
+# if you have executable scripts
+executable_*/**      text eol=lf
+
+# Explicitly mark certain files as binary to prevent Git from messing with them.
+*.png     binary
+*.jpg     binary
+*.gz      binary
+*.zip     binary
+*.ico     binary

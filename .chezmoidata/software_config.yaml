@@ -19,8 +19,8 @@ software:
   git:
     paths:
       - target: .gitconfig
-        platforms: [windows, linux, darwin]
-      - target: .config/git/config
+        platforms: [windows]
+      - target: .config/git
         platforms: [linux, darwin]
   wezterm:
     paths:

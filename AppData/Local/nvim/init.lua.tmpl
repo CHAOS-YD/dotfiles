@@ -1,8 +1,18 @@
--- Load common Vimscript core and mappings (shared with Vim)
+-- Load common Vimscript core and mappings (shared with Vim).
+
+-- ----- Platform warning: this configuration is intended for Windows only -----
+if vim.fn.has('win32') == 0 then
+    vim.notify(
+        "Warning: This Neovim configuration is intended for Windows only. "
+            .. "It may not work optimally on Unix-like systems (including WSL).",
+        vim.log.levels.WARN
+    )
+end
+
 vim.cmd([[
 {{ template "editors/common/core" . }}
 {{ template "editors/common/mappings" . }}
 ]])
 
--- Load Neovim-specific core (bootstrap lazy.nvim and plugin config)
+-- Load Neovim-specific core (bootstrap lazy.nvim and plugin config).
 {{ template "editors/nvim/core" . }}
