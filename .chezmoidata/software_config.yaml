@@ -1,0 +1,24 @@
+# software_config.yaml
+# This file is used to configure the software that Chez Moi manages.
+
+software:
+  nvim:
+    paths:
+      - target: .config/nvim
+        platforms: [linux, darwin]
+      - target: AppData/Local/nvim
+        platforms: [windows]
+  vim:
+    paths:
+      - target: .vimrc
+        platforms: [linux, darwin]
+      - target: .config/vim
+        platforms: [linux, darwin]
+      - target: vimfiles
+        platforms: [windows]
+  git:
+    paths:
+      - target: .gitconfig
+        platforms: [windows, linux, darwin]
+      - target: .config/git/config
+        platforms: [linux, darwin]

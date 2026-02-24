@@ -1,0 +1,101 @@
+{{- /* Common Git configuration shared across all platforms */ -}}
+# ============================================================================
+# Core Git settings (common)
+# ============================================================================
+[core]
+    # Path to a global .gitignore file
+    excludesfile = ~/.gitignore_global
+
+    # Treat symlinks as symlinks (not as text files)
+    symlinks = true
+
+    # On Windows, filemode detection is usually unnecessary (can be overridden)
+    filemode = false
+
+[init]
+    # Default branch name for new repositories
+    defaultBranch = main
+
+[color]
+    # Enable colored output in all Git commands
+    ui = auto
+
+[push]
+    # Only push the current branch to its upstream
+    default = simple
+
+[fetch]
+    # Prune remote-tracking branches automatically
+    prune = true
+
+[merge]
+    # Show original text in conflicts (easier to resolve)
+    conflictStyle = diff3
+
+# ============================================================================
+# Git aliases – handy shortcuts for daily work
+# ============================================================================
+[alias]
+    # Basic commands
+    co = checkout
+    br = branch
+    ci = commit
+    st = status
+    pl = pull
+    ps = push
+    pf = push --force-with-lease   # Safe force-push
+
+    # Undo / staging
+    unstage = reset HEAD --
+    undo = reset --soft HEAD^      # Undo last commit, keep changes staged
+    discard = restore .            # Discard all unstaged changes (careful!)
+    amend = commit --amend         # Amend last commit without editing message
+    reword = commit --amend --only # Amend and edit message
+
+    # Log & history
+    lg = log --graph --pretty=format:'%C(yellow)%h%C(cyan)%d%Creset %s %C(green)- %an, %cr%Creset' --abbrev-commit
+    lga = log --graph --all --pretty=format:'%C(yellow)%h%C(cyan)%d%Creset %s %C(green)- %an, %cr%Creset' --abbrev-commit
+    hist = log --graph --pretty=format:'%C(auto)%h %C(blue)%ad %C(green)%an%C(auto)%d %C(white)%s' --date=short
+    last = log -1 HEAD
+    count = shortlog -sn           # Count commits per author
+
+    # Branch management
+    branches = branch -avv
+    cleanup = !git branch --merged | grep -v '^*\\|main\\|master' | xargs -r git branch -d   # Delete merged branches
+    prev = checkout -              # Switch to previous branch
+    delete = branch -d             # Delete branch (safe)
+
+    # Search & compare
+    grep-log = log -S               # Search commits by string
+    blame-line = blame -L            # Blame specific lines
+    file-log = log --follow --pretty='%C(yellow)%h %C(cyan)%ad %C(green)%an %Creset%s' --date=short
+
+    # Repository maintenance
+    size = count-objects -vH        # Show repository size
+    untracked = ls-files --others --exclude-standard   # List untracked files
+    ignored = ls-files --others --ignored --exclude-standard   # List ignored files
+
+    # Contributors
+    contributors = shortlog -sn --all --no-merges
+
+    # Interactive rebase helpers
+    ri = rebase -i
+    rc = rebase --continue
+    ra = rebase --abort
+    rs = rebase --skip
+
+    # Stash helpers
+    ss = stash save          # Stash with message
+    sl = stash list
+    sp = stash pop
+    sa = stash apply
+    sd = stash drop
+
+    # Worktree helpers
+    wt = worktree
+    wt-ls = worktree list
+    wt-add = worktree add
+    wt-rm = worktree remove
+
+    # List all custom aliases in a simple two-column table
+    aliases = !"git config --get-regexp '^alias\\.' | sed 's/^alias\\.//' | awk '{ printf \"%-20s %s\\n\", $1, substr($0, index($0,$2)) }'"

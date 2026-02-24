@@ -1,10 +1,42 @@
-{{- if ne .chezmoi.os "windows" -}}
-# On non-Windows systems (Linux/macOS), ignore Windows-specific configs
-vimfiles
-AppData
-{{- else -}}
-# On Windows, ignore Unix-specific configs
-.config/vim
-.config/nvim
-.vimrc
-{{- end -}}
+{{/* .chezmoiignore.tmpl: Generate .chezmoiignore from software_config.yaml */}}
+{{- $allSoftware := .software }}
+# .chezmoiignore generated from software_config.yaml (current OS: {{ .chezmoi.os }})
+#
+# === Tree view (all platforms, paths and ignore status) ===
+{{- range $name, $sw := $allSoftware }}
+{{/* collect unique platforms */}}
+{{-   $platformSet := dict }}
+{{-   range $pathEntry := $sw.paths }}
+{{-     range $p := $pathEntry.platforms }}
+{{-       $_ := set $platformSet $p true }}
+{{-     end }}
+{{-   end }}
+{{-   $platforms := keys $platformSet | sortAlpha }}
+# {{ $name }}:
+{{-   range $platform := $platforms }}
+#     {{ $platform }}:
+{{-     range $pathEntry := $sw.paths }}
+{{-       if has $platform $pathEntry.platforms }}
+{{-         $ignored := not (has $.chezmoi.os $pathEntry.platforms) }}
+{{-         $ignoreMark := "" }}
+{{-         if $ignored }}{{ $ignoreMark = " (ignore)" }}{{ end }}
+#         {{ $pathEntry.target }}{{ $ignoreMark }}
+{{-       end }}
+{{-     end }}
+{{-   end }}
+{{- end }}
+
+#
+# === Actual ignore rules (for current OS: {{ .chezmoi.os }}) ===
+{{- range $name, $sw := $allSoftware }}
+{{-   $hasIgnoredForSoftware := false }}
+{{-   range $pathEntry := $sw.paths }}
+{{-     if not (has $.chezmoi.os $pathEntry.platforms) }}
+{{-       if not $hasIgnoredForSoftware }}
+# === {{ $name }} ===
+{{-         $hasIgnoredForSoftware = true }}
+{{-       end }}
+{{ $pathEntry.target }}
+{{-     end }}
+{{-   end }}
+{{- end }}

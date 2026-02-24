@@ -1,0 +1,17 @@
+{{- /* Git configuration for Linux/macOS (deployed to ~/.config/git/config) */ -}}
+{{ template "git/common" . }}
+
+# ============================================================================
+# Unix-like specific settings
+# ============================================================================
+[core]
+    # Unix line endings
+    autocrlf = input
+    pager = less -F -X
+[user]
+    name = qdyangdi
+    email = 936768863@qq.com
+[diff]
+    tool = vimdiff
+[merge]
+    tool = vimdiff
