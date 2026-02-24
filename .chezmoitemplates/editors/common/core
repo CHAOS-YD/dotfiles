@@ -38,20 +38,20 @@ if has('win32')
   set clipboard=unnamed          " Use Windows clipboard directly
 else
   " Unix-like: chezmoi detects if we are in WSL during template rendering
-  {{- if eq .chezmoi.os "linux" -}}
-    {{- $kernel := output "uname" "-r" | trim -}}
-    {{- if or (contains $kernel "WSL") (contains $kernel "microsoft") -}}
+  {{ if eq .chezmoi.os "linux" }}
+    {{ $kernel := output "uname" "-r" | trim }}
+    {{ if or (contains $kernel "WSL") (contains $kernel "microsoft") }}
       {{ template "editors/env/wsl" . }}
-    {{- else -}}
+    {{ else }}
       " Non-WSL Linux
       set shell=/bin/bash
       set clipboard=unnamedplus
-    {{- end -}}
-  {{- else -}}
+    {{ end }}
+  {{ else }}
     " macOS or other Unix
     set shell=/bin/bash
     set clipboard=unnamedplus
-  {{- end -}}
+  {{ end }}
 endif
 
 " -------------------- Helper Functions --------------------
