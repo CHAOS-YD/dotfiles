@@ -1,0 +1,76 @@
+" ==================== WSL-specific Editor Settings ====================
+" This template is included when running inside WSL.
+
+" Use bash as shell (same as other Unix)
+set shell=/bin/bash
+set clipboard=unnamedplus
+
+" ----------------------------------------------------------------------
+" For Neovim: use g:clipboard with fallback
+" ----------------------------------------------------------------------
+if has('nvim')
+  if executable('win32yank.exe')
+    let g:clipboard = {
+          \ 'name': 'win32yank-wsl',
+          \ 'copy': {
+          \   '+': 'win32yank.exe -i --crlf',
+          \   '*': 'win32yank.exe -i --crlf',
+          \ },
+          \ 'paste': {
+          \   '+': 'win32yank.exe -o --lf',
+          \   '*': 'win32yank.exe -o --lf',
+          \ },
+          \ 'cache_enabled': 0,
+          \ }
+  else
+    let g:clipboard = {
+          \ 'name': 'wsl-clip-fallback',
+          \ 'copy': {
+          \   '+': 'clip.exe',
+          \   '*': 'clip.exe',
+          \ },
+          \ 'paste': {
+          \   '+': 'powershell.exe -c "[Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace(\"`r\", \"\"))"',
+          \   '*': 'powershell.exe -c "[Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace(\"`r\", \"\"))"',
+          \ },
+          \ 'cache_enabled': 0,
+          \ }
+  endif
+
+" ----------------------------------------------------------------------
+" For Vim: custom clipboard integration with fallback
+" ----------------------------------------------------------------------
+else
+  " Determine which tool to use
+  if executable('win32yank.exe')
+    let s:copy_cmd = 'win32yank.exe -i --crlf'
+    let s:paste_cmd = 'win32yank.exe -o --lf'
+  else
+    let s:copy_cmd = 'clip.exe'
+    let s:paste_cmd = 'powershell.exe -c "[Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace(\"`r\", \"\"))"'
+  endif
+
+  " Yank (copy) to Windows clipboard using TextYankPost (Vim 8.1.1414+)
+  if exists('##TextYankPost')
+    augroup WSLClipboard
+      autocmd!
+      autocmd TextYankPost * if v:event.operator ==# 'y' | call system(s:copy_cmd, @0) | endif
+    augroup END
+  else
+    " Fallback for older Vim: map common yank operations (not exhaustive)
+    nnoremap y y:call system(s:copy_cmd, @0)<CR>
+    xnoremap y y:call system(s:copy_cmd, @0)<CR>
+    nnoremap yy yy:call system(s:copy_cmd, @0)<CR>
+    " Note: this will run after every yank, even if the yank was not intended for clipboard.
+    " You may want to customize further.
+  endif
+
+  " Paste from Windows clipboard (remap p in normal and visual mode)
+  execute 'nnoremap <silent> p :let @+=system(''' . s:paste_cmd . ''')<CR>p'
+  execute 'xnoremap <silent> p :let @+=system(''' . s:paste_cmd . ''')<CR>gvp'
+
+  " Also provide a mapping to explicitly paste without overwriting default p if needed
+  " e.g., <Leader>p for Windows paste
+  execute 'nnoremap <silent> <Leader>p :let @+=system(''' . s:paste_cmd . ''')<CR>p'
+  execute 'xnoremap <silent> <Leader>p :let @+=system(''' . s:paste_cmd . ''')<CR>gvp'
+endif

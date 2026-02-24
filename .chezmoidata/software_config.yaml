@@ -22,3 +22,9 @@ software:
         platforms: [windows, linux, darwin]
       - target: .config/git/config
         platforms: [linux, darwin]
+  wezterm:
+    paths:
+      - target: .config/wezterm
+        platforms: [linux, darwin]
+      - target: AppData/Local/wezterm
+        platforms: [windows]
