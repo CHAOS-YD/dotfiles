@@ -3,114 +3,158 @@
 # Core Git settings (common)
 # ============================================================================
 [core]
-    # Path to a global .gitignore file.
+    # Path to a global .gitignore file
     excludesfile = ~/.gitignore_global
 
-    # Treat symlinks as symlinks (not as text files).
+    # Treat symlinks as symlinks (not as text files)
     symlinks = true
 
-    # On Windows, filemode detection is usually unnecessary (can be overridden).
+    # Filemode detection: enable on Unix, disable on Windows
+    {{- if eq .chezmoi.os "windows" }}
     filemode = false
+    {{- else }}
+    filemode = true
+    {{- end }}
 
 [init]
-    # Default branch name for new repositories.
+    # Default branch name for new repositories
     defaultBranch = main
 
 [color]
-    # Enable colored output in all Git commands.
+    # Enable colored output in all Git commands
     ui = auto
 
 [push]
-    # Only push the current branch to its upstream.
+    # Only push the current branch to its upstream
     default = simple
 
 [fetch]
-    # Prune remote-tracking branches automatically.
+    # Prune remote-tracking branches automatically
     prune = true
 
 [merge]
-    # Show original text in conflicts (easier to resolve).
+    # Show original text in conflicts (easier to resolve)
     conflictStyle = diff3
 
-# ============================================================================
-# Git aliases – handy shortcuts for daily work
-# ============================================================================
+# ----------------------------------------------------------------------------
+# Git aliases – Handy shortcuts for daily work
+# ----------------------------------------------------------------------------
 [alias]
-    # Basic commands.
+    # Basic commands
     co = checkout
     br = branch
     ci = commit
     st = status
     pl = pull
     ps = push
-    # Safe force-push.
+
+    # Safe force-push
     pf = push --force-with-lease
 
-    # Undo / staging.
+    # Undo / staging
     unstage = reset HEAD --
-    # Undo last commit, keep changes staged.
+    # Undo last commit, keep changes staged
     undo = reset --soft HEAD^
-    # Discard all unstaged changes (careful!).
+    # Discard all unstaged changes (careful!)
     discard = restore .
-    # Amend last commit without editing message.
+    # Amend last commit without editing message
     amend = commit --amend
-    # Amend and edit message.
+    # Amend and edit message
     reword = commit --amend --only
 
-    # Log & history.
+    # Log & history
     lg = log --graph --pretty=format:'%C(yellow)%h%C(cyan)%d%Creset %s %C(green)- %an, %cr%Creset' --abbrev-commit
     lga = log --graph --all --pretty=format:'%C(yellow)%h%C(cyan)%d%Creset %s %C(green)- %an, %cr%Creset' --abbrev-commit
     hist = log --graph --pretty=format:'%C(auto)%h %C(blue)%ad %C(green)%an%C(auto)%d %C(white)%s' --date=short
     last = log -1 HEAD
-    # Count commits per author.
+    # Count commits per author
     count = shortlog -sn
 
-    # Branch management.
+    # Branch management
     branches = branch -avv
-    # Delete merged branches.
+    # Delete merged branches
     cleanup = !git branch --merged | grep -v '^*\\|main\\|master' | xargs -r git branch -d
-    # Switch to previous branch.
+    # Switch to previous branch
     prev = checkout -
-    # Delete branch (safe).
+    # Delete branch (safe)
     delete = branch -d
 
-    # Search & compare.
-    # Search commits by string.
+    # Search & compare
+    # Search commits by string
     grep-log = log -S
-    # Blame specific lines.
+    # Blame specific lines
     blame-line = blame -L
     file-log = log --follow --pretty='%C(yellow)%h %C(cyan)%ad %C(green)%an %Creset%s' --date=short
 
-    # Repository maintenance.
-    # Show repository size.
+    # Repository maintenance
+    # Show repository size
     size = count-objects -vH
-    # List untracked files.
+    # List untracked files
     untracked = ls-files --others --exclude-standard
-    # List ignored files.
+    # List ignored files
     ignored = ls-files --others --ignored --exclude-standard
 
-    # Contributors.
+    # Contributors
     contributors = shortlog -sn --all --no-merges
 
-    # Interactive rebase helpers.
+    # Interactive rebase helpers
     ri = rebase -i
     rc = rebase --continue
     ra = rebase --abort
     rs = rebase --skip
 
-    # Stash helpers.
-    # Stash with message.
+    # Stash helpers
+    # Stash with message
     ss = stash save
     sl = stash list
     sp = stash pop
     sa = stash apply
     sd = stash drop
 
-    # Worktree helpers.
+    # Worktree helpers
     wt = worktree
     wt-ls = worktree list
     wt-add = worktree add
     wt-rm = worktree remove
 
-    # List all custom aliases in a simple two-column table.
+    # List all custom aliases in a simple two-column table
     aliases = !"git config --get-regexp '^alias\\.' | sed 's/^alias\\.//' | awk '{ printf \"%-20s %s\\n\", $1, substr($0, index($0,$2)) }'"
+
+# ----------------------------------------------------------------------------
+# Xget acceleration (per-platform, from global definitions)
+# ----------------------------------------------------------------------------
+{{- if and $.xget $.xget.applications $.xget.applications.git }}
+  {{- with $.xget.applications.git }}
+    {{- if .enabled }}
+      {{- $gitDomain := "" }}
+      {{- if hasKey . "domain" }}{{ $gitDomain = .domain }}{{ end }}
+      {{- $globalDomain := $gitDomain | default $.xget.defaults.domain | default "xget.xi-xu.me" }}
+      {{- range $platform := .platforms }}
+        {{- $platformConfig := index $.xget.platforms $platform }}
+        {{- if $platformConfig }}
+          {{- $upstream := $platformConfig.upstream }}
+          {{- if $upstream }}
+            {{- $platformDomain := "" }}
+            {{- if hasKey $platformConfig "domain" }}{{ $platformDomain = $platformConfig.domain }}{{ end }}
+            {{- $domain := $platformDomain | default $globalDomain }}
+            {{- $prefix := $platform }}
+            {{- if hasKey $platformConfig "prefix" }}
+              {{- $prefix = $platformConfig.prefix }}
+            {{- end }}
+            {{- $path := "" }}
+            {{- if hasKey $platformConfig "path_prefix" }}
+              {{- $path = $platformConfig.path_prefix }}
+            {{- end }}
+            {{- $baseURL := printf "https://%s/%s" $domain $prefix }}
+            {{- if ne $path "" }}
+              {{- $baseURL = printf "%s/%s" $baseURL $path }}
+            {{- end }}
+            {{- $baseURL = printf "%s/" $baseURL }}
+[url "{{ $baseURL }}"]
+    insteadOf = https://{{ $upstream }}/
+          {{- end }}
+        {{- end }}
+      {{- end }}
+    {{- end }}
+  {{- end }}
+{{- end }}

@@ -1,13 +1,51 @@
 # software_config.yaml
-# This file is used to configure the software that Chez Moi manages.
+# This file configures software deployment paths managed by Chez Moi
+# (acceleration settings are now in xget_config.yaml)
 
 software:
+  # Git
+  git:
+    paths:
+      - target: .gitconfig
+        platforms: [windows]
+      - target: .config/git
+        platforms: [linux, darwin]
+
+  # npm
+  npm:
+    paths:
+      - target: .npmrc
+        platforms: [windows, linux, darwin]
+
+  # Python pip
+  python:
+    paths:
+      - target: .config/pip/pip.conf
+        platforms: [linux, darwin]
+      - target: pip/pip.ini
+        platforms: [windows]
+
+  # Conda
+  conda:
+    paths:
+      - target: .condarc
+        platforms: [linux, darwin, windows]
+
+  # Docker
+  docker:
+    paths:
+      - target: .docker/config.json
+        platforms: [linux, darwin, windows]
+
+  # Neovim
   nvim:
     paths:
       - target: .config/nvim
         platforms: [linux, darwin]
       - target: AppData/Local/nvim
         platforms: [windows]
+
+  # Vim
   vim:
     paths:
       - target: .vimrc
@@ -16,12 +54,8 @@ software:
         platforms: [linux, darwin]
       - target: vimfiles
         platforms: [windows]
-  git:
-    paths:
-      - target: .gitconfig
-        platforms: [windows]
-      - target: .config/git
-        platforms: [linux, darwin]
+
+  # WezTerm
   wezterm:
     paths:
       - target: .config/wezterm

@@ -1,0 +1,184 @@
+# xget_config.yaml
+# Central configuration for xget acceleration service
+
+xget:
+  # Global defaults
+  defaults:
+    domain: xget.xi-xu.me # Default acceleration domain
+    enabled: false # Default disabled, enable per application
+
+  # Definition of all xget-supported platforms
+  platforms:
+    # Code hosting platforms
+    gh:
+      upstream: github.com
+    gl:
+      upstream: gitlab.com
+    gist:
+      upstream: gist.github.com
+    gitea:
+      upstream: gitea.com
+    codeberg:
+      upstream: codeberg.org
+    sf:
+      upstream: sourceforge.net
+    aosp:
+      upstream: android.googlesource.com
+
+    # AI/ML platforms
+    hf:
+      upstream: huggingface.co
+    civitai:
+      upstream: civitai.com
+
+    # Package managers
+    npm:
+      upstream: registry.npmjs.org
+    pypi:
+      upstream: pypi.org
+    conda-main:
+      prefix: conda
+      upstream: repo.anaconda.com
+    conda-community:
+      prefix: conda
+      path_prefix: community
+      upstream: conda.anaconda.org
+    maven:
+      upstream: repo1.maven.org
+    gradle:
+      upstream: plugins.gradle.org
+    rubygems:
+      upstream: rubygems.org
+    cran:
+      upstream: cran.r-project.org
+    cpan:
+      upstream: www.cpan.org
+    ctan:
+      upstream: tug.ctan.org
+    golang:
+      upstream: proxy.golang.org
+    nuget:
+      upstream: api.nuget.org
+    crates:
+      upstream: crates.io
+    packagist:
+      upstream: repo.packagist.org
+
+    # Linux distributions
+    debian:
+      upstream: deb.debian.org
+    ubuntu:
+      upstream: archive.ubuntu.com
+    fedora:
+      upstream: dl.fedoraproject.org
+    rocky:
+      upstream: download.rockylinux.org
+    opensuse:
+      upstream: download.opensuse.org
+    arch:
+      upstream: geo.mirror.pkgbuild.com
+
+    # Other platforms
+    arxiv:
+      upstream: arxiv.org
+    fdroid:
+      upstream: f-droid.org
+    jenkins:
+      upstream: updates.jenkins.io
+
+    # Container registries (cr family)
+    cr-docker:
+      prefix: cr
+      path_prefix: docker
+      upstream: registry-1.docker.io
+    cr-ghcr:
+      prefix: cr
+      path_prefix: ghcr
+      upstream: ghcr.io
+    cr-gcr:
+      prefix: cr
+      path_prefix: gcr
+      upstream: gcr.io
+    cr-mcr:
+      prefix: cr
+      path_prefix: mcr
+      upstream: mcr.microsoft.com
+    cr-ecr:
+      prefix: cr
+      path_prefix: ecr
+      upstream: public.ecr.aws
+    cr-quay:
+      prefix: cr
+      path_prefix: quay
+      upstream: quay.io
+    cr-gitlab:
+      prefix: cr
+      path_prefix: gitlab
+      upstream: registry.gitlab.com
+    cr-redhat:
+      prefix: cr
+      path_prefix: redhat
+      upstream: registry.redhat.io
+
+    # AI inference providers (ip family)
+    ip-openai:
+      prefix: ip
+      path_prefix: openai
+      upstream: api.openai.com
+    ip-anthropic:
+      prefix: ip
+      path_prefix: anthropic
+      upstream: api.anthropic.com
+    ip-gemini:
+      prefix: ip
+      path_prefix: gemini
+      upstream: generativelanguage.googleapis.com
+    ip-cohere:
+      prefix: ip
+      path_prefix: cohere
+      upstream: api.cohere.ai
+    ip-mistralai:
+      prefix: ip
+      path_prefix: mistralai
+      upstream: api.mistral.ai
+    ip-groq:
+      prefix: ip
+      path_prefix: groq
+      upstream: api.groq.com
+
+  # Applications that use xget acceleration
+  applications:
+    git:
+      enabled: false
+      platforms:
+        - gh
+        - gl
+        - gist
+        - gitea
+        - codeberg
+        - sf
+        - aosp
+
+    npm:
+      enabled: false
+      platforms:
+        - npm
+
+    python:
+      enabled: false
+      platforms:
+        - pypi
+
+    conda:
+      enabled: false
+      platforms:
+        - conda-main
+        - conda-community
+
+    docker:
+      enabled: false
+      platforms:
+        - cr-docker
+        - cr-ghcr
+        - cr-gcr
+        - cr-mcr
