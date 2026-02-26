@@ -2,11 +2,11 @@ local wezterm = require 'wezterm'
 local config = wezterm.config_builder()
 local action = wezterm.action
 
-{{ template "wezterm/general" . }}
-{{ template "wezterm/fonts" . }}
-{{ template "wezterm/colors" . }}
-{{ template "wezterm/keys" . }}
-{{ template "wezterm/launch_menu" . }}
-{{ template "wezterm/platform" . }}
+{{ template "wezterm/general.lua" . }}
+{{ template "wezterm/fonts.lua" . }}
+{{ template "wezterm/colors.lua" . }}
+{{ template "wezterm/keys.lua" . }}
+{{ template "wezterm/launch_menu.lua" . }}
+{{ template "wezterm/platform.lua" . }}
 
 return config

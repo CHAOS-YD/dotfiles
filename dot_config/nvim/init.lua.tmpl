@@ -14,11 +14,11 @@ end
 
 -- Load common Vimscript core and mappings (shared with Vim).
 vim.cmd([[
-{{ template "editors/common/core" . }}
-{{ template "editors/common/mappings" . }}
+{{ template "editors/common/core.vim" . }}
+{{ template "editors/common/mappings.vim" . }}
 ]])
 
 -- Load Neovim-specific core (includes lazy.nvim bootstrap and plugin config).
-{{ template "editors/nvim/core" . }}
+{{ template "editors/nvim/core.lua" . }}
 
 -- Additional Neovim settings can be added here if needed.

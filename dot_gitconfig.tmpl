@@ -1,6 +1,6 @@
 {{- /* Git configuration for Windows only */ -}}
 {{- if eq .chezmoi.os "windows" }}
-{{ template "git/common" . }}
+{{ template "git/common.gitconfig" . }}
 
 # ============================================================================
 # Windows-specific settings

@@ -16,7 +16,7 @@ opt.mouse = 'a'               -- Enable mouse support
 -- 2. Keymaps (Neovim-specific)
 -- -------------------------------------------------------------------
 -- Load Neovim-specific key mappings from shared template
-{{ template "editors/nvim/mappings" . }}
+{{ template "editors/nvim/mappings.lua" . }}
 
 -- -------------------------------------------------------------------
 -- 3. Auto-install lazy.nvim (with error handling)
@@ -44,4 +44,4 @@ vim.opt.rtp:prepend(lazypath)
 -- 4. Plugin configuration (using lazy.nvim) – load from shared template
 -- -------------------------------------------------------------------
 -- Load plugin list from editors/nvim/plugins
-require('lazy').setup({{ template "editors/nvim/plugins" . }})
+require('lazy').setup({{ template "editors/nvim/plugins.lua" . }})

@@ -1,6 +1,6 @@
 {{- /* Git configuration for Unix-like systems only */ -}}
 {{- if ne .chezmoi.os "windows" }}
-{{ template "git/common" . }}
+{{ template "git/common.gitconfig" . }}
 
 # ============================================================================
 # Unix-like specific settings

@@ -7,7 +7,14 @@
 set nocompatible
 filetype plugin indent on
 syntax on
-set termguicolors
+if has('termguicolors')
+  if exists('$COLORTERM') && ($COLORTERM == 'truecolor' || $COLORTERM == '24bit')
+    set termguicolors
+  elseif has('nvim')
+    " Neovim generally handles terminal capability detection well.
+    set termguicolors
+  endif
+endif
 set hlsearch incsearch
 set ignorecase smartcase
 set tabstop=4 shiftwidth=4
@@ -41,7 +48,7 @@ else
   {{- if eq .chezmoi.os "linux" }}
     {{- $kernel := output "uname" "-r" | trim }}
     {{- if or (contains $kernel "WSL") (contains $kernel "microsoft") }}
-      {{ template "editors/env/wsl" . }}
+      {{ template "editors/env/wsl.vim" . }}
     {{- else }}
       " Non-WSL Linux.
       set shell=/bin/bash
@@ -133,5 +140,10 @@ endif
 
 " Platform flag for convenience.
 let s:is_windows = has('win32')
+
+" Ensure vim data directory is in runtimepath (critical for vim-plug)
+if exists('s:vim_data_dir')
+  execute 'set runtimepath^=' . s:vim_data_dir
+endif
 
 " ==================== End of Universal Core ====================

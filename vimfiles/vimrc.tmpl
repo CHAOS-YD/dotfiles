@@ -12,10 +12,10 @@ if !has('win32') && !has('win64')
 endif
 
 " ----- Include common core (basic settings, directories, shell, clipboard) -----
-{{ template "editors/common/core" . }}
+{{ template "editors/common/core.vim" . }}
 
 " ----- Include Vim core (auto-install vim-plug, Git mirror) -----
-{{ template "editors/vim/core" . }}
+{{ template "editors/vim/core.vim" . }}
 
 " ----- vim-plug settings -----
 " Plugin directory – use s:vim_data_dir defined in common/core.
@@ -23,11 +23,11 @@ let s:plugged_dir = s:vim_data_dir . '/plugged'
 
 " Plugin list (from shared template).
 call plug#begin(s:plugged_dir)
-{{ template "editors/vim/plugins" . }}
+{{ template "editors/vim/plugins.vim" . }}
 call plug#end()
 
 " ----- Key mappings -----
-{{ template "editors/common/mappings" . }}
-{{ template "editors/vim/mappings" . }}
+{{ template "editors/common/mappings.vim" . }}
+{{ template "editors/vim/mappings.vim" . }}
 
 " Additional Windows-specific mappings can be added here if needed.

@@ -10,9 +10,9 @@ if vim.fn.has('win32') == 0 then
 end
 
 vim.cmd([[
-{{ template "editors/common/core" . }}
-{{ template "editors/common/mappings" . }}
+{{ template "editors/common/core.vim" . }}
+{{ template "editors/common/mappings.vim" . }}
 ]])
 
 -- Load Neovim-specific core (bootstrap lazy.nvim and plugin config).
-{{ template "editors/nvim/core" . }}
+{{ template "editors/nvim/core.lua" . }}
