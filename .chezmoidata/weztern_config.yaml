@@ -1,0 +1,43 @@
+# wezterm.yaml: Runtime settings for WezTerm (managed by chezmoi)
+# Only include fields you want to override; defaults are defined in templates.
+wezterm:
+  # Window opacity (0.0 - 1.0), default: 0.95
+  opacity: 0.96
+
+  # Initial window size in columns and rows, default: 120x28
+  initial_cols: 140
+  initial_rows: 36
+
+  # Font size, default: 13.0
+  font_size: 14.0
+
+  # Font fallback list with features (each entry can be a string or map)
+  # Default: Maple Mono NF CN, Fira Code, JetBrains Mono, Monospace
+  fonts:
+    - family: "Cascadia Code"
+      features: { calt: 1, liga: 1 }
+    - family: "Fira Code"
+      features: { calt: 1, liga: 1 }
+    - "Monospace"
+
+  # Color schemes (default: Noctis Minimus / Noctis Lux)
+  color_scheme_dark: "Noctis Minimus"
+  color_scheme_light: "Noctis Lux"
+
+  # Custom keybindings (optional)
+  key_copy: "c" # default: "c"
+  key_copy_mods: "CTRL|SHIFT" # default: "CTRL|SHIFT"
+  key_paste: "v" # default: "v"
+  key_paste_mods: "CTRL|SHIFT" # default: "CTRL|SHIFT"
+
+  # Launch menu entries (if omitted, OS-specific defaults are used)
+  launch_menu:
+    - label: "PowerShell 7"
+      args: ["pwsh.exe", "-NoLogo"]
+    - label: "Git Bash"
+      args: ["C:/Program Files/Git/bin/bash.exe", "--login", "-i"]
+      cwd: "%USERPROFILE%" # optional field
+
+  # Default shell per platform (if omitted, OS-specific defaults are used)
+  default_shell_windows: ["pwsh.exe", "-NoLogo"] # default for Windows
+  default_shell_linux: ["zsh", "-l"] # default for Linux

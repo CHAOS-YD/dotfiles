@@ -1,6 +1,6 @@
-{{/* .chezmoiignore.tmpl: Generate .chezmoiignore from software_config.yaml */}}
-{{- $allSoftware := .software }}
-# .chezmoiignore generated from software_config.yaml (current OS: {{ .chezmoi.os }})
+{{/* .chezmoiignore.tmpl: Generate .chezmoiignore from deploy_targets.yaml */}}
+{{- $allSoftware := .deploy_targets }}
+# .chezmoiignore generated from deploy_targets.yaml (current OS: {{ .chezmoi.os }})
 #
 # === Tree view (all platforms, paths and ignore status) ===
 {{- range $name, $sw := $allSoftware }}

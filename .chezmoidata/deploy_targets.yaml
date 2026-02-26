@@ -1,8 +1,7 @@
-# software_config.yaml
-# This file configures software deployment paths managed by Chez Moi
-# (acceleration settings are now in xget_config.yaml)
+# deploy_targets.yaml: Define deployment target paths for each software managed by Chezmoi
+# (Acceleration settings are now in xget_config.yaml)
 
-software:
+deploy_targets:
   # Git
   git:
     paths:
@@ -58,7 +57,5 @@ software:
   # WezTerm
   wezterm:
     paths:
-      - target: .config/wezterm
-        platforms: [linux, darwin]
-      - target: AppData/Local/wezterm
-        platforms: [windows]
+      - target: .config/wezterm/wezterm.lua
+        platforms: [linux, darwin, windows]
