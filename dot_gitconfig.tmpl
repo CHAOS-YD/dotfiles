@@ -1,33 +1,23 @@
-{{- /* Git configuration for Windows only */ -}}
 {{- if eq .chezmoi.os "windows" }}
 {{ template "git/common.gitconfig" . }}
 
 # ============================================================================
-# Windows-specific settings
+# Windows-specific settings (only user info remains)
 # ============================================================================
-[core]
-    autocrlf = true
-    filemode = false
-    pager = less -F -X
-
 [user]
     name = ChaosYD
     email = 936768863@qq.com
 
-[diff]
-    tool = nvim
-[difftool "nvim"]
-    cmd = 'nvim -d "$LOCAL" "$REMOTE"'
-
-[merge]
-    tool = nvim
-[mergetool "nvim"]
-    cmd = 'nvim -d "$LOCAL" "$REMOTE" "$BASE" "$MERGED"'
+# If you need Windows-specific diff/merge tools, add them here.
+# Example:
+# [diff]
+#     tool = nvim
+# [difftool "nvim"]
+#     cmd = 'nvim -d "$LOCAL" "$REMOTE"'
 {{- else }}
 # ============================================================================
 # FATAL ERROR: This Git configuration file is intended for Windows only.
-# It has been deployed to a non-Windows system ({{ .chezmoi.os }}).
-# Please correct your chezmoi deployment and remove this file.
+# It has been deployed to {{ .chezmoi.os }}. Please correct your deployment.
 # ============================================================================
 [error-intentionally-invalid
 {{- end }}

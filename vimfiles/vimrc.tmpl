@@ -14,7 +14,10 @@ endif
 " ----- Include common core (basic settings, directories, shell, clipboard) -----
 {{ template "editors/common/core.vim" . }}
 
-" ----- Include Vim core (auto-install vim-plug, Git mirror) -----
+" ----- Include Windows-specific environment -----
+{{ template "editors/env/windows.vim" . }}
+
+" ----- Include Vim core (auto-install vim-plug) -----
 {{ template "editors/vim/core.vim" . }}
 
 " ----- vim-plug settings -----
@@ -29,5 +32,3 @@ call plug#end()
 " ----- Key mappings -----
 {{ template "editors/common/mappings.vim" . }}
 {{ template "editors/vim/mappings.vim" . }}
-
-" Additional Windows-specific mappings can be added here if needed.

@@ -1,7 +1,6 @@
-" ==================== Vim-specific key mappings ====================
-" Mappings for plugins that only exist in Vim
+" ==================== Vim-Specific Key Mappings ====================
+" This file is for Vim-only mappings that are NOT plugin-related.
+" Plugin mappings are handled in plugins.vim.
 
-" Toggle NERDTree
-nnoremap <Leader>n :NERDTreeToggle<CR>
-
-" Add more Vim-specific mappings here...
+" Add any non-plugin Vim mappings here (e.g., map <Leader>v :version<CR>)
+" Currently empty.

@@ -1,30 +1,21 @@
-{{- /* Git configuration for Unix-like systems only */ -}}
 {{- if ne .chezmoi.os "windows" }}
 {{ template "git/common.gitconfig" . }}
 
 # ============================================================================
-# Unix-like specific settings
+# Unix-like specific settings (only user info remains)
 # ============================================================================
-
-[core]
-    # Unix line endings and filemode.
-    autocrlf = input
-    filemode = true
-    pager = less -F -X
-
 [user]
     name = qdyangdi
     email = 936768863@qq.com
 
-[diff]
-    tool = vimdiff
-
-[merge]
-    tool = vimdiff
+# If you need Unix-specific diff/merge tools, add them here.
+# Example:
+# [diff]
+#     tool = vimdiff
 {{- else }}
 # ============================================================================
 # FATAL ERROR: This Git configuration file is intended for Unix-like systems only.
-# It has been deployed to Windows ({{ .chezmoi.os }}). Please correct your chezmoi deployment.
+# It has been deployed to {{ .chezmoi.os }}. Please correct your deployment.
 # ============================================================================
 [error-intentionally-invalid
 {{- end }}

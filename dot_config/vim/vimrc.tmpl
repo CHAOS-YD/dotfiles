@@ -1,12 +1,12 @@
-" ========== XDG compliant Vim main config ==========
-" This file is managed by chezmoi. Rendered as ~/.config/vim/vimrc (Linux/macOS).
-" It is intended for Unix-like systems only. If loaded on Windows, it will warn and exit.
+" ========== Unix Vim Configuration ==========
+" This file is managed by chezmoi. Rendered as ~/.vimrc (or ~/.config/vim/vimrc).
+" It is intended for Unix-like systems only. If loaded on Windows, it warns and exits.
 
 " ----- Platform guard: only proceed on Unix-like systems -----
 if has('win32') || has('win64')
     echohl WarningMsg
     echo "Warning: This Vim configuration is intended for Unix-like systems."
-    echo "It appears you are running on Windows. Please use the appropriate config (e.g., ~/vimfiles/vimrc)."
+    echo "It appears you are running on Windows. Please use the appropriate config."
     echohl None
     finish
 endif
@@ -14,14 +14,11 @@ endif
 " ----- Include common core (basic settings, directories, shell, clipboard) -----
 {{ template "editors/common/core.vim" . }}
 
-" ----- Include Vim core (auto-install vim-plug, Git mirror) -----
+" ----- Include Vim core (auto-install vim-plug) -----
 {{ template "editors/vim/core.vim" . }}
 
 " ----- vim-plug settings -----
-" Plugin directory – use s:vim_data_dir defined in common/core.
 let s:plugged_dir = s:vim_data_dir . '/plugged'
-
-" Plugin list (from shared template).
 call plug#begin(s:plugged_dir)
 {{ template "editors/vim/plugins.vim" . }}
 call plug#end()
@@ -29,5 +26,3 @@ call plug#end()
 " ----- Key mappings -----
 {{ template "editors/common/mappings.vim" . }}
 {{ template "editors/vim/mappings.vim" . }}
-
-" Additional Unix-specific mappings can be added here if needed.

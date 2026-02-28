@@ -1,24 +1,34 @@
--- ==================== Neovim Main Configuration ====================
--- This file is the entry point for Neovim, managed by chezmoi.
--- It loads common Vimscript settings and Neovim-specific Lua modules.
--- All platform-specific logic is handled inside the included templates.
+-- ==================== Neovim Main Configuration (Unix/WSL) ====================
+-- This file is managed by chezmoi. It will be rendered as ~/.config/nvim/init.lua
+-- on Unix-like systems (including WSL).
 
--- ----- Platform warning: this configuration is primarily designed for Unix-like systems -----
+-- Platform guard: ensure this config is used on Unix-like systems only.
 if vim.fn.has('win32') == 1 then
     vim.notify(
-        "Warning: This Neovim configuration is intended for Unix-like systems (including WSL). "
-            .. "It may not work optimally on native Windows.",
-        vim.log.levels.WARN
+        "Error: This Neovim configuration is intended for Unix-like systems (including WSL). "
+            .. "It appears you are running on native Windows. Please use the appropriate config.",
+        vim.log.levels.ERROR
     )
+    return
 end
 
--- Load common Vimscript core and mappings (shared with Vim).
-vim.cmd([[
+-- 1. Load common Vimscript core (netrw fallback, basic settings)
+vim.cmd [[
 {{ template "editors/common/core.vim" . }}
-{{ template "editors/common/mappings.vim" . }}
-]])
+]]
 
--- Load Neovim-specific core (includes lazy.nvim bootstrap and plugin config).
+-- (No Windows-specific env on Unix)
+
+-- 2. Load Neovim-specific core (options, lazy.nvim bootstrap)
 {{ template "editors/nvim/core.lua" . }}
 
--- Additional Neovim settings can be added here if needed.
+-- 3. Load common Vimscript mappings (universal save/quit, etc.)
+vim.cmd [[
+{{ template "editors/common/mappings.vim" . }}
+]]
+
+-- 4. Load Neovim-specific mappings (non-plugin)
+{{ template "editors/nvim/mappings.lua" . }}
+
+-- 5. Load plugins using lazy.nvim
+require('lazy').setup({{ template "editors/nvim/plugins.lua" . }})

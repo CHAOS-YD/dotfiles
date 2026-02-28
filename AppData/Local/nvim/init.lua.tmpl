@@ -1,18 +1,38 @@
--- Load common Vimscript core and mappings (shared with Vim).
+-- ==================== Neovim Main Configuration (Windows) ====================
+-- This file is managed by chezmoi. It will be rendered as ~/AppData/Local/nvim/init.lua
+-- on Windows systems.
 
--- ----- Platform warning: this configuration is intended for Windows only -----
+-- Platform guard: ensure this config is used on Windows only.
 if vim.fn.has('win32') == 0 then
     vim.notify(
-        "Warning: This Neovim configuration is intended for Windows only. "
-            .. "It may not work optimally on Unix-like systems (including WSL).",
-        vim.log.levels.WARN
+        "Error: This Neovim configuration is intended for Windows only. "
+            .. "It appears you are running on a Unix-like system (including WSL). "
+            .. "Please use the appropriate config (e.g., ~/.config/nvim/init.lua).",
+        vim.log.levels.ERROR
     )
+    return  -- Stop loading further
 end
 
-vim.cmd([[
+-- 1. Load common Vimscript core (netrw fallback, basic settings)
+vim.cmd [[
 {{ template "editors/common/core.vim" . }}
-{{ template "editors/common/mappings.vim" . }}
-]])
+]]
 
--- Load Neovim-specific core (bootstrap lazy.nvim and plugin config).
+-- 1.5 Load Windows-specific environment (after common core)
+vim.cmd [[
+{{ template "editors/env/windows.vim" . }}
+]]
+
+-- 2. Load Neovim-specific core (options, lazy.nvim bootstrap)
 {{ template "editors/nvim/core.lua" . }}
+
+-- 3. Load common Vimscript mappings (universal save/quit, etc.)
+vim.cmd [[
+{{ template "editors/common/mappings.vim" . }}
+]]
+
+-- 4. Load Neovim-specific mappings (non-plugin)
+{{ template "editors/nvim/mappings.lua" . }}
+
+-- 5. Load plugins using lazy.nvim
+require('lazy').setup({{ template "editors/nvim/plugins.lua" . }})

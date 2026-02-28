@@ -1,4 +1,6 @@
-{{- /* ==================== Vim Core (vim-plug auto-install) ==================== */ -}}
+" ==================== Vim Core ====================
+" Vim-specific core settings (vim-plug auto-install, etc.)
+
 " Ensure vim data directory is defined (fallback if not set in common/core)
 if !exists('s:vim_data_dir')
   if has('win32')
