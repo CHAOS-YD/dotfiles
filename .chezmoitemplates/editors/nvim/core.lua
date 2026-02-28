@@ -1,6 +1,6 @@
 -- ==================== Neovim Core ====================
 -- This template contains Neovim-specific core configuration.
--- It is included after common/core and common/mappings.
+-- It is loaded after common/core.vim and before plugins.
 
 -- -------------------------------------------------------------------
 -- 1. Global options (Neovim-specific)
@@ -13,13 +13,7 @@ opt.mouse = 'a'               -- Enable mouse support
 -- (shell and clipboard are already set in common/core via chezmoi template)
 
 -- -------------------------------------------------------------------
--- 2. Keymaps (Neovim-specific)
--- -------------------------------------------------------------------
--- Load Neovim-specific key mappings from shared template
-{{ template "editors/nvim/mappings.lua" . }}
-
--- -------------------------------------------------------------------
--- 3. Auto-install lazy.nvim (with error handling)
+-- 2. Auto-install lazy.nvim (with error handling)
 -- -------------------------------------------------------------------
 local lazypath = vim.fn.stdpath('data') .. '/lazy/lazy.nvim'
 if not vim.loop.fs_stat(lazypath) then
@@ -40,8 +34,4 @@ end
 -- Prepend lazy.nvim to runtimepath
 vim.opt.rtp:prepend(lazypath)
 
--- -------------------------------------------------------------------
--- 4. Plugin configuration (using lazy.nvim) – load from shared template
--- -------------------------------------------------------------------
--- Load plugin list from editors/nvim/plugins
-require('lazy').setup({{ template "editors/nvim/plugins.lua" . }})
+-- NOTE: Plugin setup is now handled in the main entry file (init.lua), not here.

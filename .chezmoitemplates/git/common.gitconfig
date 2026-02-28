@@ -1,6 +1,6 @@
 {{- /* Common Git configuration shared across all platforms */ -}}
 # ============================================================================
-# Core Git settings (common)
+# Core Git settings (common, with platform-specific values)
 # ============================================================================
 [core]
     # Path to a global .gitignore file
@@ -9,31 +9,41 @@
     # Treat symlinks as symlinks (not as text files)
     symlinks = true
 
-    # Filemode detection: enable on Unix, disable on Windows
+    # Platform-specific settings
     {{- if eq .chezmoi.os "windows" }}
+    # Windows: use true for autocrlf (convert to CRLF on checkout)
+    autocrlf = true
+    # Filemode detection should be disabled on Windows
     filemode = false
     {{- else }}
+    # Unix/Linux/macOS: use input for autocrlf (convert to LF on commit only)
+    autocrlf = input
+    # Filemode detection should be enabled on Unix-like systems
     filemode = true
     {{- end }}
 
+    # Pager: less with options that work on all platforms (Git for Windows includes less)
+    pager = less -F -X
+
+    # Optional: additional cross-platform safe settings
+    # Protect against NTFS filesystem vulnerabilities (recommended)
+    protectNTFS = true
+    # Precompose Unicode for macOS (harmless on other platforms)
+    precomposeunicode = true
+
 [init]
-    # Default branch name for new repositories
     defaultBranch = main
 
 [color]
-    # Enable colored output in all Git commands
     ui = auto
 
 [push]
-    # Only push the current branch to its upstream
     default = simple
 
 [fetch]
-    # Prune remote-tracking branches automatically
     prune = true
 
 [merge]
-    # Show original text in conflicts (easier to resolve)
     conflictStyle = diff3
 
 # ----------------------------------------------------------------------------
@@ -121,7 +131,7 @@
     aliases = !"git config --get-regexp '^alias\\.' | sed 's/^alias\\.//' | awk '{ printf \"%-20s %s\\n\", $1, substr($0, index($0,$2)) }'"
 
 # ----------------------------------------------------------------------------
-# Xget acceleration (per-platform, from global definitions)
+# Xget acceleration (per-platform, from global definitions) – unchanged
 # ----------------------------------------------------------------------------
 {{- if and $.xget $.xget.applications $.xget.applications.git }}
   {{- with $.xget.applications.git }}

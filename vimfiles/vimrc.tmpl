@@ -14,20 +14,28 @@ endif
 " ----- Include common core (basic settings, directories, shell, clipboard) -----
 {{ template "editors/common/core.vim" . }}
 
-" ----- Include Vim core (auto-install vim-plug, Git mirror) -----
+" ----- Include Windows-specific environment -----
+{{ template "editors/env/windows.vim" . }}
+
+" ----- Include Vim core (auto-install vim-plug) -----
 {{ template "editors/vim/core.vim" . }}
 
-" ----- vim-plug settings -----
-" Plugin directory – use s:vim_data_dir defined in common/core.
-let s:plugged_dir = s:vim_data_dir . '/plugged'
+" ----- Plugin manager and modules -----
+if exists('s:editor_data_dir')
+  let s:plugged_dir = s:editor_data_dir . '/plugged'
+  call plug#begin(s:plugged_dir)
 
-" Plugin list (from shared template).
-call plug#begin(s:plugged_dir)
-{{ template "editors/vim/plugins.vim" . }}
-call plug#end()
+  if exists('g:vim_plugin_modules_dir')
+    execute 'source ' . g:vim_plugin_modules_dir . '/core.vim'
+    execute 'source ' . g:vim_plugin_modules_dir . '/lsp.vim'
+    execute 'source ' . g:vim_plugin_modules_dir . '/ui.vim'
+    execute 'source ' . g:vim_plugin_modules_dir . '/git.vim'
+    execute 'source ' . g:vim_plugin_modules_dir . '/tools.vim'
+  endif
+
+  call plug#end()
+endif
 
 " ----- Key mappings -----
 {{ template "editors/common/mappings.vim" . }}
 {{ template "editors/vim/mappings.vim" . }}
-
-" Additional Windows-specific mappings can be added here if needed.
