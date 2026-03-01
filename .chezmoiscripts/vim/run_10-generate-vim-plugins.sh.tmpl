@@ -1,0 +1,38 @@
+{{ if ne .chezmoi.os "windows" -}}
+#!/bin/bash
+# run_10-generate-vim-plugins.sh.tmpl
+# Purpose: Generate Vim plugin configuration files on Unix (executed every apply).
+
+set -eux
+
+{{- $configHome := .chezmoi.xdgConfigHome | default (printf "%s/.config" .chezmoi.homeDir) }}
+pluginDir="{{ $configHome }}/vim/plugins"
+pluginConfigDir="$pluginDir/plugins_config.d"
+mkdir -p "$pluginConfigDir"
+
+# Generate plugins.vim
+cat > "$pluginDir/plugins.vim" << 'EOF'
+{{ include (printf "%s/plugins.vim" (printf "%s/.chezmoitemplates/editors/vim" .chezmoi.sourceDir)) }}
+EOF
+
+# Generate plugin_mappings.vim
+cat > "$pluginDir/plugin_mappings.vim" << 'EOF'
+{{ include (printf "%s/plugin_mappings.vim" (printf "%s/.chezmoitemplates/editors/vim" .chezmoi.sourceDir)) }}
+EOF
+
+# Generate plugins_config.vim
+cat > "$pluginDir/plugins_config.vim" << 'EOF'
+" ==================== Plugin Configurations Entry ====================
+runtime! plugins_config.d/*.vim
+EOF
+
+{{ $templatesDir := .chezmoi.sourceDir | printf "%s/.chezmoitemplates/editors/vim" }}
+{{ range $file := glob (printf "%s/plugins_config.d/*.vim" $templatesDir) }}
+{{ $base := base $file }}
+cat > "$pluginConfigDir/{{ $base }}" << 'EOF'
+{{ include (printf "%s/plugins_config.d/%s" $templatesDir $base) }}
+EOF
+{{ end }}
+
+echo "✅ Vim plugin files generated in $pluginDir"
+{{ end -}}

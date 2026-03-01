@@ -1,18 +1,13 @@
-" ==================== Vim Core ====================
-" Vim-specific core settings (vim-plug auto-install, etc.)
-
-" Ensure editor data directory is defined (fallback if not set in common/core)
+" ==================== Vim Plug Bootstrap ====================
 if !exists('s:editor_data_dir')
   if has('win32')
     let s:editor_data_dir = expand('~/vimfiles')
   else
     let s:editor_data_dir = exists('$XDG_DATA_HOME') ?
-          \ $XDG_DATA_HOME . '/vim' :
-          \ expand('~/.local/share/vim')
+          \ $XDG_DATA_HOME . '/vim' : expand('~/.local/share/vim')
   endif
 endif
 
-" Auto-install vim-plug if missing
 let s:plug_target = s:editor_data_dir . '/autoload/plug.vim'
 if empty(glob(s:plug_target))
   let s:urls = [
@@ -36,7 +31,7 @@ if empty(glob(s:plug_target))
     autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
   else
     echohl WarningMsg
-    echo "Failed to download vim-plug. Please check network or install manually."
+    echo "Failed to download vim-plug. Check network or install manually."
     echohl None
   endif
   unlet! s:downloaded

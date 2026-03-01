@@ -10,7 +10,6 @@ if has('win32')
 
     " ----- File format defaults (CRLF for new files) -----
     set fileformats=dos,unix   " Auto-detect, prioritize dos
-    set fileformat=dos          " New files use dos (CRLF)
 
     " ----- Optional: adjust encoding detection order for GBK files -----
     " Uncomment if you frequently work with GBK-encoded files:

@@ -1,0 +1,72 @@
+" ========== Unified Vim Configuration ==========
+" This template adapts to the current platform using chezmoi variables.
+" WSL detection follows official chezmoi documentation.
+
+{{- /* 1. Platform detection and path computation */ -}}
+{{- $isWindows := eq .chezmoi.os "windows" -}}
+{{- $isWSL := false -}}
+{{- if eq .chezmoi.os "linux" -}}
+  {{- if .chezmoi.kernel.osrelease -}}
+    {{- $isWSL = (.chezmoi.kernel.osrelease | lower | contains "microsoft") -}}
+  {{- end -}}
+{{- end -}}
+{{- $home := .chezmoi.homeDir | replace "\\" "/" -}}
+
+{{- $configDir := "" -}}
+{{- $pluginBase := "" -}}
+
+{{- if $isWindows -}}
+  {{- $configDir = $home -}}
+  {{- $pluginBase = printf "%s/vimfiles/plugins" $home -}}
+{{- else -}}
+  {{- $xdgConfigHome := "" -}}
+  {{- if has "xdgConfigHome" .chezmoi -}}
+    {{- $xdgConfigHome = .chezmoi.xdgConfigHome -}}
+  {{- end -}}
+  {{- if ne $xdgConfigHome "" -}}
+    {{- $configDir = $xdgConfigHome -}}
+  {{- else -}}
+    {{- $configDir = printf "%s/.config" $home -}}
+  {{- end -}}
+  {{- $pluginBase = printf "%s/vim/plugins" $configDir -}}
+{{- end -}}
+
+" ----- Platform guard and environment includes -----
+{{ if $isWindows }}
+if !has('win32')
+    echo "This config is for Windows only." | finish
+endif
+{{ template "editors/env/windows.vim" . }}
+{{ else if $isWSL }}
+if has('win32')
+    echo "This config is for Unix/WSL only." | finish
+endif
+{{ template "editors/env/wsl.vim" . }}
+{{ else }}
+if has('win32')
+    echo "This config is for Unix only." | finish
+endif
+{{ end }}
+
+" ----- Base settings -----
+{{ template "editors/common/base.vim" . }}
+
+" ----- Vim-plug bootstrap -----
+{{ template "editors/vim/bootstrap.vim" . }}
+
+" ----- Plugin manager -----
+if exists('s:editor_data_dir')
+  let s:plugged_dir = s:editor_data_dir . '/plugged'
+  call plug#begin(s:plugged_dir)
+    source {{ $pluginBase }}/plugins.vim
+  call plug#end()
+endif
+
+" ----- Plugin configurations -----
+source {{ $pluginBase }}/plugins_config.vim
+
+" ----- Global mappings -----
+{{ template "editors/common/mappings.vim" . }}
+
+" ----- Plugin mappings -----
+source {{ $pluginBase }}/plugin_mappings.vim

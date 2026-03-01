@@ -1,0 +1,38 @@
+{{ if eq .chezmoi.os "windows" -}}
+#!powershell
+# run_10-generate-vim-plugins.ps1.tmpl
+# Purpose: Generate Vim plugin configuration files on Windows (executed every apply).
+
+$ErrorActionPreference = "Stop"
+
+$pluginDir = "{{ .chezmoi.homeDir | replace "\\" "/" }}/vimfiles/plugins"
+$pluginConfigDir = "$pluginDir/plugins_config.d"
+New-Item -ItemType Directory -Force -Path $pluginConfigDir | Out-Null
+
+# Generate plugins.vim
+@'
+{{ include (printf "%s/plugins.vim" (printf "%s/.chezmoitemplates/editors/vim" .chezmoi.sourceDir)) }}
+'@ | Out-File -FilePath "$pluginDir/plugins.vim" -Encoding utf8
+
+# Generate plugin_mappings.vim
+@'
+{{ include (printf "%s/plugin_mappings.vim" (printf "%s/.chezmoitemplates/editors/vim" .chezmoi.sourceDir)) }}
+'@ | Out-File -FilePath "$pluginDir/plugin_mappings.vim" -Encoding utf8
+
+# Generate plugins_config.vim
+@'
+" ==================== Plugin Configurations Entry ====================
+runtime! plugins_config.d/*.vim
+'@ | Out-File -FilePath "$pluginDir/plugins_config.vim" -Encoding utf8
+
+{{ $templatesDir := .chezmoi.sourceDir | printf "%s/.chezmoitemplates/editors/vim" }}
+{{ range $file := glob (printf "%s/plugins_config.d/*.vim" $templatesDir) }}
+{{ $base := base $file }}
+# Generate {{ $base }}
+@'
+{{ include (printf "%s/plugins_config.d/%s" $templatesDir $base) }}
+'@ | Out-File -FilePath "$pluginConfigDir/{{ $base }}" -Encoding utf8
+{{ end }}
+
+Write-Host "✅ Vim plugin files generated in $pluginDir"
+{{ end -}}

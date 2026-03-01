@@ -1,3 +1,6 @@
+# Ignore the entire .scripts directory (not to be deployed)
+.scripts/
+
 {{/* .chezmoiignore.tmpl: Generate .chezmoiignore from deploy_targets.yaml */}}
 {{- $allSoftware := .deploy_targets }}
 # .chezmoiignore generated from deploy_targets.yaml (current OS: {{ .chezmoi.os }})
@@ -40,3 +43,4 @@
 {{-     end }}
 {{-   end }}
 {{- end }}
+

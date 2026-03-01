@@ -1,0 +1,15 @@
+Plug 'preservim/nerdtree'
+Plug 'ryanoasis/vim-devicons'
+Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'jeffkreeftmeijer/vim-numbertoggle'
+Plug 'mhinz/vim-sayonara'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+Plug 'tpope/vim-fugitive'
+Plug 'vim-airline/vim-airline'
+Plug 'vim-airline/vim-airline-themes'
+Plug 'tinted-theming/tinted-vim'
+Plug 'preservim/tagbar'
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-surround'
